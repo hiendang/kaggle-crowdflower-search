@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler,MinMaxScaler
 from sklearn.cross_validation import StratifiedKFold
 from lasagne.nonlinearities import *
 from utility import gini
+
 def make_submission(filename,idx,ypred):
 	#generate solution
 	preds = pd.DataFrame({"Id": idx, "Hazard": ypred})
@@ -25,7 +26,7 @@ def get_data_1(train=None,test=None,functions=[np.mean,np.var]):
 	if test is None:
 		test  = pd.read_csv('../input/test.csv', index_col=0)
 	labels = train.Hazard.values
-	train.drop('Hazard', axis=1, inplace=True)
+	train = train.drop('Hazard', axis=1)
 	idx = test.index.values
 	train,test = factorizing(train,labels,test,functions=functions)
 	return train,labels.astype(float),test,idx
@@ -91,7 +92,7 @@ def build_nn2(input_size=None):
 			],
 		# layer parameters:
 		input_shape=(None, input_size),  # 96x96 input pixels per batch
-		dropout0_p=0.2,
+		dropout0_p=0.17,
 		hidden1_num_units=600,  # number of units in hidden layer
 		hidden1_nonlinearity=very_leaky_rectify,
 		dropout1_p=0.5,
@@ -158,7 +159,7 @@ def nn_features(X,y,Xtest,model=build_nn2,random_state=1,n_folds=4,early_stop=20
 		return ypred_train, ypred_test
 	return ypred_train, ypred_test*1./n_folds
 
-if __name__ == "__main__":
+def exp1():
 	train,y,test,idx = get_data_1()
 	train = np.log1p(train.astype(float))
 	test = np.log1p(test.astype(float))
@@ -173,5 +174,16 @@ if __name__ == "__main__":
 	train = np.column_stack((train,mtrain))
 	test = np.column_stack((test,mtest))
 	rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=1,n_folds=5,early_stop=20)
-	pd.DataFrame(data=rtrain_nn).to_csv('rtrain_nn1.csv',index=False)
-	pd.DataFrame(data=rtest_nn).to_csv('rtest_nn1.csv',index=False)
+	rtrain_nn_total = rtrain_nn
+	rtest_nn_total = rtest_nn
+	for i in range(9):
+		rand_seed = i*113+9201
+		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=30)		
+		pd.DataFrame(data=rtrain_nn_total).to_csv('rtrain_nn_last.csv',index=False)
+		pd.DataFrame(data=rtest_nn_total).to_csv('rtest_nn_last.csv',index=False)
+	
+	pd.DataFrame(data=rtrain_nn_total/10).to_csv('rtrain_nn_final.csv',index=False)
+	pd.DataFrame(data=rtest_nn_total/10).to_csv('rtest_nn_final.csv',index=False)
+	
+if __name__ == "__main__":
+	exp1()
