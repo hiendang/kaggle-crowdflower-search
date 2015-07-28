@@ -1,0 +1,3 @@
+level2 xgboost:
+	linear regression for y, log(y)
+	logistic regression for log(y)
