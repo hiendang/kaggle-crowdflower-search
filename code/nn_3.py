@@ -110,16 +110,16 @@ def build_nn2(input_size=None):
 			],
 		# layer parameters:
 		input_shape=(None, input_size),  # 96x96 input pixels per batch
-		dropout0_p=0.21,
+		dropout0_p=0.2,
 		hidden1_num_units=700,  # number of units in hidden layer
 		hidden1_nonlinearity=very_leaky_rectify,
 		dropout1_p=0.5,
 		hidden2_num_units=1200,
 		hidden2_nonlinearity=leaky_rectify,
 		dropout2_p=0.5,
-		hidden3_num_units=600,
+		hidden3_num_units=500,
 		hidden3_nonlinearity=sigmoid,
-		dropout3_p=0.5,
+		dropout3_p=0.3,
 		output_nonlinearity=sigmoid,# output layer uses identity function
 		output_num_units=1,  # 4 target values
 		#objective_loss_function=squared_error,
@@ -191,12 +191,12 @@ def exp1(random_state=1):
 	mtest = scaler2.transform(mtest)
 	train = np.column_stack((train,mtrain))
 	test = np.column_stack((test,mtest))
-	rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=random_state,n_folds=5,early_stop=20)
+	rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=random_state,n_folds=5,early_stop=50)
 	rtrain_nn_total = rtrain_nn
 	rtest_nn_total = rtest_nn
 	for i in range(9):
 		rand_seed = i*7+random_state+1
-		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=30)		
+		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=50)		
 		pd.DataFrame(data=rtrain_nn_total).to_csv('rtrain_nn_last_3.csv',index=False)
 		pd.DataFrame(data=rtest_nn_total).to_csv('rtest_nn_last_3.csv',index=False)
 	
@@ -204,4 +204,4 @@ def exp1(random_state=1):
 	pd.DataFrame(data=rtest_nn_total/10).to_csv('rtest_nn_final_3.csv',index=False)
 	
 if __name__ == "__main__":
-	exp1()
+	exp1(890)
