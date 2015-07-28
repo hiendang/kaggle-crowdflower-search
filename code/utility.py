@@ -143,6 +143,10 @@ def gini(y_true, y_pred):
     # normalize to true Gini coefficient
     return G_pred/G_true
 
+def evalerror(preds, dtrain):
+	labels = dtrain.get_label()
+	gini_score = 1- gini(labels,preds)
+	return 'gini', gini_score
 
 def count_feature(X, tbl_lst = None, min_cnt = 1):
 	X_lst = [pd.Series(X[:, i]) for i in range(X.shape[1])]
@@ -230,12 +234,12 @@ def xgb_features(X,y,Xtest,params=None,random_state=0,n_folds=4,early_stop=20):
 			y_train, y_test = yt[train_index], yt[test_index]
 			dtrain = xgb.DMatrix(data=X_train,label=y_train)
 			dvalid = xgb.DMatrix(data=X_test,label=y_test)
-			evallist = [(dvalid,'valid')]
+			evallist = [(dtrain,'train'),(dvalid,'valid')]
 			num_round = 5000
 			params['seed'] = seed+1
 			seed+=1
 			plst = params.items()
-			bst = xgb.train( plst, dtrain, num_round,evallist,early_stopping_rounds=early_stop)
+			bst = xgb.train( plst, dtrain, num_round,evallist,early_stopping_rounds=early_stop,feval=evalerror)
 			ypred = bst.predict(dtest,ntree_limit=bst.best_iteration)
 			ypred_valid = bst.predict(dvalid)
 			print ("\tcross validation gini score %s: %f"%(params['objective'],gini(y_test,ypred_valid)))
