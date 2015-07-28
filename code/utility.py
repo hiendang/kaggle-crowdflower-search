@@ -236,7 +236,7 @@ def xgb_features(X,y,Xtest,params=None,random_state=0,n_folds=4,early_stop=20):
 			seed+=1
 			plst = params.items()
 			bst = xgb.train( plst, dtrain, num_round,evallist,early_stopping_rounds=early_stop)
-			ypred = bst.predict(dtest)
+			ypred = bst.predict(dtest,ntree_limit=bst.best_iteration)
 			ypred_valid = bst.predict(dvalid)
 			print ("\tcross validation gini score %s: %f"%(params['objective'],gini(y_test,ypred_valid)))
 			ypred_test += ypred
