@@ -11,6 +11,7 @@ from lasagne.nonlinearities import *
 from lasagne import layers
 from lasagne.updates import nesterov_momentum,adagrad
 from sklearn.cross_validation import train_test_split
+
 def make_submission(filename,idx,ypred):
 	#generate solution
 	preds = pd.DataFrame({"Id": idx, "Hazard": ypred})
@@ -225,7 +226,7 @@ def col_k_ones_matrix(p, m, k = None, k_min = 1, k_max = 1, seed = None, rm_dup_
 		mat = remove_duplicate_cols(mat)
 	return mat
 
-def xgb_features(X,y,Xtest,params=None,random_state=0,n_folds=4,early_stop=20):
+def xgb_features(X,y,Xtest,params=None,random_state=0,n_folds=4,early_stop=20,eval_with_gini=False):
 	try:
 		if params['objective'] == 'reg:logistic':
 			yt = MinMaxScaler().fit_transform(y*1.)		
@@ -246,7 +247,10 @@ def xgb_features(X,y,Xtest,params=None,random_state=0,n_folds=4,early_stop=20):
 			params['seed'] = seed+1
 			seed+=1
 			plst = params.items()
-			bst = xgb.train( plst, dtrain, num_round,evallist,early_stopping_rounds=early_stop,feval=evalerror)
+			if eval_with_gini:
+				bst = xgb.train( plst, dtrain, num_round,evallist,early_stopping_rounds=early_stop,feval=evalerror)
+			else :
+				bst = xgb.train( plst, dtrain, num_round,evallist,early_stopping_rounds=early_stop)
 			ypred = bst.predict(dtest,ntree_limit=bst.best_iteration)
 			ypred_valid = bst.predict(dvalid)
 			print ("\tcross validation gini score %s: %f"%(params['objective'],gini(y_test,ypred_valid)))

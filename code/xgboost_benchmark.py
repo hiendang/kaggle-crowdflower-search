@@ -67,7 +67,7 @@ np.column_stack((meta_features_train,rtrain))
 np.column_stack((meta_features_test,rtest))
 
 params['objective'] = 'reg:logistic'
-rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=200,n_folds=5)
+rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=200,n_folds=5,early_stop=50)
 print 'gini score is %f '%gini(y,rtrain)
 np.column_stack((meta_features_train,rtrain))
 np.column_stack((meta_features_test,rtest))
