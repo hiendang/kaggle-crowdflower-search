@@ -39,7 +39,7 @@ def get_data_2(train=None,test=None,dropping=False):
 	if dropping:
 		train = train.drop('T2_V10', axis=1)
 		train = train.drop('T2_V7', axis=1)
-		train = train.drop('T1_V13', axis=1
+		train = train.drop('T1_V13', axis=1)
 		train = train.drop('T1_V10', axis=1)
 		test = test.drop('T2_V10', axis=1)
 		test = test.drop('T2_V7', axis=1)
