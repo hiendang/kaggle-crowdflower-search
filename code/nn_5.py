@@ -102,8 +102,8 @@ def build_nn2(input_size=None):
 			('dropout1',layers.DropoutLayer),
 			('hidden2', layers.DenseLayer),
 			('dropout2',layers.DropoutLayer),
-			#('hidden3', layers.DenseLayer),
-			#('dropout3',layers.DropoutLayer),
+			('hidden3', layers.DenseLayer),
+			('dropout3',layers.DropoutLayer),
 			#('hidden4', layers.DenseLayer),
 			#('dropout4',layers.DropoutLayer),
 			('output', layers.DenseLayer),
@@ -111,15 +111,15 @@ def build_nn2(input_size=None):
 		# layer parameters:
 		input_shape=(None, input_size),  # 96x96 input pixels per batch
 		dropout0_p=0.2,
-		hidden1_num_units=1200,  # number of units in hidden layer
+		hidden1_num_units=1500,  # number of units in hidden layer
 		hidden1_nonlinearity=very_leaky_rectify,
 		dropout1_p=0.5,
 		hidden2_num_units=800,
 		hidden2_nonlinearity=leaky_rectify,
 		dropout2_p=0.5,
-		#hidden3_num_units=600,
-		#hidden3_nonlinearity=leaky_rectify,
-		#dropout3_p=0.4,
+		hidden3_num_units=200,
+		hidden3_nonlinearity=leaky_rectify,
+		dropout3_p=0.2,
 		#hidden4_num_units=400,
 		#hidden4_nonlinearity=sigmoid,
 		#dropout4_p=0.3,
@@ -205,11 +205,11 @@ def exp1(random_state=1):
 		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=50)
 		rtrain_nn_total += rtrain_nn
 		rtest_nn_total += rtest_nn
-		pd.DataFrame(data=rtrain_nn_total).to_csv('rtrain_nn_last_4.csv',index=False)
-		pd.DataFrame(data=rtest_nn_total).to_csv('rtest_nn_last_4.csv',index=False)
+		pd.DataFrame(data=rtrain_nn_total).to_csv('rtrain_nn_last_5.csv',index=False)
+		pd.DataFrame(data=rtest_nn_total).to_csv('rtest_nn_last_5.csv',index=False)
 	
-	pd.DataFrame(data=rtrain_nn_total/10).to_csv('rtrain_nn_final_4.csv',index=False)
-	pd.DataFrame(data=rtest_nn_total/10).to_csv('rtest_nn_final_4.csv',index=False)
+	pd.DataFrame(data=rtrain_nn_total/10).to_csv('rtrain_nn_final_5.csv',index=False)
+	pd.DataFrame(data=rtest_nn_total/10).to_csv('rtest_nn_final_5.csv',index=False)
 	
 if __name__ == "__main__":
 	exp1(111)
