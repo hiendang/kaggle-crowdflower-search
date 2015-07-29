@@ -215,10 +215,10 @@ np.column_stack((meta_features_train,rtrain))
 np.column_stack((meta_features_test,rtest))
 
 mt = pd.DataFrame(data=meta_features_train)
-mt.to_csv('meta_features_train.csv',index=False)
+mt.to_csv('meta_features_train_2.csv',index=False)
 
 mt = pd.DataFrame(data=meta_features_test)
-mt.to_csv('meta_features_test.csv',index=False)
+mt.to_csv('meta_features_test_2.csv',index=False)
 
 #params = {}
 #params["objective"] = 'multi:softmax' #'reg:logistic'#"reg:linear" #
