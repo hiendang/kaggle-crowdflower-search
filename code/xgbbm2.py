@@ -13,17 +13,17 @@ def get_data_1(train=None,test=None,functions=[np.mean,np.var],dropping=False):
 	if test is None:
 		test  = pd.read_csv('../input/test.csv', index_col=0)
 	labels = train.Hazard.values
-	train.drop('Hazard', axis=1, inplace=True)
+	train = train.drop('Hazard', axis=1)
 	idx = test.index.values
 	if dropping:
-		train.drop('T2_V10', axis=1, inplace=True)
-		train.drop('T2_V7', axis=1, inplace=True)
-		train.drop('T1_V13', axis=1, inplace=True)
-		train.drop('T1_V10', axis=1, inplace=True)
-		test.drop('T2_V10', axis=1, inplace=True)
-		test.drop('T2_V7', axis=1, inplace=True)
-		test.drop('T1_V13', axis=1, inplace=True)
-		test.drop('T1_V10', axis=1, inplace=True)
+		train = train.drop('T2_V10', axis=1)
+		train = train.drop('T2_V7', axis=1)
+		train = train.drop('T1_V13', axis=1)
+		train = train.drop('T1_V10', axis=1)
+		test = test.drop('T2_V10', axis=1)
+		test = test.drop('T2_V7', axis=1)
+		test = test.drop('T1_V13', axis=1)
+		test = test.drop('T1_V10', axis=1)
 	train,test = factorizing(train,labels,test,functions=functions)
 	return train,labels.astype(float),test,idx
 
@@ -34,17 +34,17 @@ def get_data_2(train=None,test=None,dropping=False):
 	if test is None:
 		test  = pd.read_csv('../input/test.csv', index_col=0)
 	labels = train.Hazard.values
-	train.drop('Hazard', axis=1, inplace=True)
+	train = train.drop('Hazard', axis=1)
 	idx = test.index.values
 	if dropping:
-		train.drop('T2_V10', axis=1, inplace=True)
-		train.drop('T2_V7', axis=1, inplace=True)
-		train.drop('T1_V13', axis=1, inplace=True)
-		train.drop('T1_V10', axis=1, inplace=True)
-		test.drop('T2_V10', axis=1, inplace=True)
-		test.drop('T2_V7', axis=1, inplace=True)
-		test.drop('T1_V13', axis=1, inplace=True)
-		test.drop('T1_V10', axis=1, inplace=True)
+		train = train.drop('T2_V10', axis=1)
+		train = train.drop('T2_V7', axis=1)
+		train = train.drop('T1_V13', axis=1
+		train = train.drop('T1_V10', axis=1)
+		test = test.drop('T2_V10', axis=1)
+		test = test.drop('T2_V7', axis=1)
+		test = test.drop('T1_V13', axis=1)
+		test = test.drop('T1_V10', axis=1)
 	from sklearn.feature_extraction import DictVectorizer
 	train = train.T.to_dict().values()
 	test = test.T.to_dict().values()
