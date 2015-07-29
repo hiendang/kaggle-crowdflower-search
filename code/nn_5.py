@@ -203,6 +203,8 @@ def exp1(random_state=1):
 	for i in range(9):
 		rand_seed = i*7+random_state+1
 		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=50)
+		rtrain_nn_total += rtrain_nn
+		rtest_nn_total += rtest_nn
 		pd.DataFrame(data=rtrain_nn_total).to_csv('rtrain_nn_last_4.csv',index=False)
 		pd.DataFrame(data=rtest_nn_total).to_csv('rtest_nn_last_4.csv',index=False)
 	
