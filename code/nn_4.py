@@ -104,23 +104,26 @@ def build_nn2(input_size=None):
 			('dropout2',layers.DropoutLayer),
 			('hidden3', layers.DenseLayer),
 			('dropout3',layers.DropoutLayer),
-			#('hidden4', layers.DenseLayer),
-			#('dropout4',layers.DropoutLayer),
+			('hidden4', layers.DenseLayer),
+			('dropout4',layers.DropoutLayer),
 			('output', layers.DenseLayer),
 			],
 		# layer parameters:
 		input_shape=(None, input_size),  # 96x96 input pixels per batch
-		dropout0_p=0.21,
-		hidden1_num_units=700,  # number of units in hidden layer
+		dropout0_p=0.13,
+		hidden1_num_units=400,  # number of units in hidden layer
 		hidden1_nonlinearity=very_leaky_rectify,
 		dropout1_p=0.5,
-		hidden2_num_units=1200,
+		hidden2_num_units=800,
 		hidden2_nonlinearity=leaky_rectify,
 		dropout2_p=0.5,
 		hidden3_num_units=600,
-		hidden3_nonlinearity=sigmoid,
-		dropout3_p=0.5,
-		output_nonlinearity=rectify,# output layer uses identity function
+		hidden3_nonlinearity=leaky_rectify,
+		dropout3_p=0.4,
+		hidden4_num_units=400,
+		hidden4_nonlinearity=sigmoid,
+		dropout4_p=0.3,
+		output_nonlinearity=sigmoid,# output layer uses identity function
 		output_num_units=1,  # 4 target values
 		#objective_loss_function=squared_error,
 		#optimization method:
@@ -129,7 +132,7 @@ def build_nn2(input_size=None):
 		update_learning_rate=theano.shared(float32(0.03)),
 		update_momentum=theano.shared(float32(0.9)),
 		on_epoch_finished=[
-			AdjustVariable('update_learning_rate', start=0.03, stop=0.0005,decay=0.994),
+			AdjustVariable('update_learning_rate', start=0.03, stop=0.0005,decay=0.991),
 			#EarlyStopping(patience=20),
 			AdjustVariable('update_momentum', start=0.8, stop=0.9,decay=1.001),
 		],
@@ -146,8 +149,10 @@ def nn_features(X,y,Xtest,model=build_nn2,random_state=1,n_folds=4,early_stop=20
 	y = y.astype(theano.config.floatX)
 	seed = random_state
 	nn = model(X.shape[1])
+	y = modify_labels(y)
+	#y = np.log(y)
 	#if nn.output_nonlinearity==sigmoid:
-	#y = MinMaxScaler().fit_transform(y*1.)	
+	y = MinMaxScaler().fit_transform(y*1.)	
 	from lasagne.layers import noise
 	from theano.sandbox.rng_mrg import MRG_RandomStreams
 	noise._srng =MRG_RandomStreams(seed=random_state)
@@ -204,4 +209,4 @@ def exp1(random_state=1):
 	pd.DataFrame(data=rtest_nn_total/10).to_csv('rtest_nn_final_4.csv',index=False)
 	
 if __name__ == "__main__":
-	exp1(11)
+	exp1(111)
