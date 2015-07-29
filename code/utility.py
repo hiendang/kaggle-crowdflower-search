@@ -11,6 +11,13 @@ from lasagne.nonlinearities import *
 from lasagne import layers
 from lasagne.updates import nesterov_momentum,adagrad
 from sklearn.cross_validation import train_test_split
+def make_submission(filename,idx,ypred):
+	#generate solution
+	preds = pd.DataFrame({"Id": idx, "Hazard": ypred})
+	preds = preds.set_index('Id')
+	preds.to_csv(filename)
+	print ("Storing solution to file %s."%filename)
+
 def expected_scores(y,ypred,n_iter=100,random_state=1):
 	expected_public_score = 0
 	expected_private_score= 0
