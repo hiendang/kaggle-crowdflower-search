@@ -169,7 +169,7 @@ def nn_features(X,y,Xtest,model=build_nn2,random_state=1,n_folds=4,early_stop=20
 			ypred_valid = nn.predict(X_test).reshape(-1,)
 			gini_score = gini(y_test,ypred_valid)
 			print "gini score is %f"%(gini_score)
-			if gini_score>0.25
+			if gini_score>0.25:
 				ypred_test = ypred if ypred_test is None else ypred_test + ypred
 				ypred_train[test_index] = ypred_valid
 	except KeyboardInterrupt:
