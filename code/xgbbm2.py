@@ -56,8 +56,8 @@ def get_data_2(train=None,test=None,dropping=False):
 ### XGBOOST ###	
 params = {}
 params["objective"] = 'reg:linear'
-params["eta"] = 0.01
-params["min_child_weight"] = 6
+params["eta"] = 0.007
+params["min_child_weight"] = 5
 params["subsample"] = 0.8
 params["colsample_bytree"]=0.8
 params["scale_pos_weight"] = 1.0
