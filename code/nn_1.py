@@ -151,8 +151,9 @@ def nn_features(X,y,Xtest,model=build_nn2,random_state=1,n_folds=4,early_stop=20
 			ypred_valid = nn.predict(X_test).reshape(-1,)
 			gini_score = gini(y_test,ypred_valid)
 			print "gini score is %f"%(gini_score)
-			ypred_test = ypred if ypred_test is None else ypred_test + ypred
-			ypred_train[test_index] = ypred_valid
+			if gini_score >0.29:
+				ypred_test = ypred if ypred_test is None else ypred_test + ypred
+				ypred_train[test_index] = ypred_valid
 	except KeyboardInterrupt:
 		ypred_test = np.zeros(Xtest.shape[0]);
 		ypred_train = np.zeros(X.shape[0]);
@@ -173,12 +174,14 @@ def exp1():
 	mtest = scaler2.transform(mtest)
 	train = np.column_stack((train,mtrain))
 	test = np.column_stack((test,mtest))
-	rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=1,n_folds=5,early_stop=20)
+	rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=1,n_folds=5,early_stop=50)
 	rtrain_nn_total = rtrain_nn
 	rtest_nn_total = rtest_nn
 	for i in range(9):
 		rand_seed = i*113+9201
-		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=30)		
+		rtrain_nn,rtest_nn = nn_features(train,y,test,model=build_nn2,random_state=rand_seed,n_folds=5,early_stop=50)
+		rtrain_nn_total += rtrain_nn
+		rtest_nn_total += rtest_nn
 		pd.DataFrame(data=rtrain_nn_total).to_csv('rtrain_nn_last.csv',index=False)
 		pd.DataFrame(data=rtest_nn_total).to_csv('rtest_nn_last.csv',index=False)
 	

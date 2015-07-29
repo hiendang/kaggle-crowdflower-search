@@ -212,4 +212,4 @@ def exp1(random_state=1):
 	pd.DataFrame(data=rtest_nn_total/10).to_csv('rtest_nn_final_5.csv',index=False)
 	
 if __name__ == "__main__":
-	exp1(111)
+	exp1(999)
