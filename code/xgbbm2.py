@@ -74,42 +74,42 @@ meta_features_test = rtest
 
 rtrain,rtest = xgb_features(train,np.log1p(labels),test,params=params,random_state=100,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 params['objective'] = 'reg:logistic'
 rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=200,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 rtrain,rtest = xgb_features(train,np.log1p(labels),test,params=params,random_state=300,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 params['objective'] = 'count:poisson'
 rtrain,rtest = xgb_features(train,labels,test,params=params,random_state=400,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 rtrain,rtest= xgb_features(train,np.log1p(labels),test,params=params,random_state=500,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 params['objective'] = 'rank:pairwise'
 params['eval_metric'] = 'rmse'
 rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=600,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 rtrain,rtest= xgb_features(train,np.log1p(labels),test,params=params,random_state=700,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
-np.column_stack((meta_features_train,rtrain))
-np.column_stack((meta_features_test,rtest))
+meta_features_train= np.column_stack((meta_features_train,rtrain))
+meta_features_test = np.column_stack((meta_features_test,rtest))
 
 mt = pd.DataFrame(data=meta_features_train)
 mt.to_csv('meta_features_train_2.csv',index=False)
