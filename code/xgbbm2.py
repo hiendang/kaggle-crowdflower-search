@@ -51,39 +51,39 @@ def get_data_2(train=None,test=None,dropping=False):
 	vec = DictVectorizer()
 	train = vec.fit_transform(train)
 	test = vec.transform(test)	
-	return train,labels.astype(float),test,idx
+	return np.asarray(train.todense()),labels.astype(float),np.asarray(test.todense()),idx
 
 ### XGBOOST ###	
 params = {}
 params["objective"] = 'reg:linear'
-params["eta"] = 0.007
-params["min_child_weight"] = 5
-params["subsample"] = 0.8
+params["eta"] = 0.005
+params["min_child_weight"] = 7
+params["subsample"] = 0.75
 params["colsample_bytree"]=0.8
-params["scale_pos_weight"] = 1.0
+params["scale_pos_weight"] = .9
 params["silent"] = 1
-params["max_depth"] = 8
+params["max_depth"] = 9
 
-train,y,test,idx = get_data_1(dropping=True)
+train,y,test,idx = get_data_2(dropping=True)
 labels = modify_labels(y,padding_function=np.log10)
 
-rtrain,rtest = xgb_features(train,labels,test,params=params,random_state=1,n_folds=10,early_stop=100)
+rtrain,rtest = xgb_features(train,labels,test,params=params,random_state=21,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train = rtrain
 meta_features_test = rtest
 
-rtrain,rtest = xgb_features(train,np.log1p(labels),test,params=params,random_state=100,n_folds=10,early_stop=100)
+rtrain,rtest = xgb_features(train,np.log1p(labels),test,params=params,random_state=1001,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
 
 params['objective'] = 'reg:logistic'
-rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=200,n_folds=10,early_stop=100)
+rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=2001,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
 
-rtrain,rtest = xgb_features(train,np.log1p(labels),test,params=params,random_state=300,n_folds=10,early_stop=100)
+rtrain,rtest = xgb_features(train,np.log1p(labels),test,params=params,random_state=3001,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
@@ -94,25 +94,25 @@ print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
 
-rtrain,rtest= xgb_features(train,np.log1p(labels),test,params=params,random_state=500,n_folds=10,early_stop=100)
+rtrain,rtest= xgb_features(train,np.log1p(labels),test,params=params,random_state=5001,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
 
 params['objective'] = 'rank:pairwise'
 params['eval_metric'] = 'rmse'
-rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=600,n_folds=10,early_stop=100)
+rtrain,rtest= xgb_features(train,labels,test,params=params,random_state=6001,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
 
-rtrain,rtest= xgb_features(train,np.log1p(labels),test,params=params,random_state=700,n_folds=10,early_stop=100)
+rtrain,rtest= xgb_features(train,np.log1p(labels),test,params=params,random_state=7001,n_folds=10,early_stop=100)
 print 'gini score is %f '%gini(y,rtrain)
 meta_features_train= np.column_stack((meta_features_train,rtrain))
 meta_features_test = np.column_stack((meta_features_test,rtest))
 
 mt = pd.DataFrame(data=meta_features_train)
-mt.to_csv('meta_features_train_2.csv',index=False)
+mt.to_csv('meta_features_train_3.csv',index=False)
 
 mt = pd.DataFrame(data=meta_features_test)
-mt.to_csv('meta_features_test_2.csv',index=False)
+mt.to_csv('meta_features_test_3.csv',index=False)
