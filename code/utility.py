@@ -25,7 +25,7 @@ def get_data_1(train=None,test=None,functions=[np.mean,np.var]):
 	if test is None:
 		test  = pd.read_csv('../input/test.csv', index_col=0)
 	labels = train.Hazard.values
-	train.drop('Hazard', axis=1, inplace=True)
+	train = train.drop('Hazard', axis=1)
 	idx = test.index.values
 	train,test = factorizing(train,labels,test,functions=functions)
 	return train,labels.astype(float),test,idx
@@ -37,7 +37,7 @@ def get_data_2(train=None,test=None):
 	if test is None:
 		test  = pd.read_csv('../input/test.csv', index_col=0)
 	labels = train.Hazard.values
-	train.drop('Hazard', axis=1, inplace=True)
+	train = train.drop('Hazard', axis=1)
 	idx = test.index.values
 	
 	from sklearn.feature_extraction import DictVectorizer
@@ -54,7 +54,7 @@ def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.v
 	if test is None:
 		test  = pd.read_csv('../input/test.csv', index_col=0)
 	labels = train.Hazard.values
-	train.drop('Hazard', axis=1, inplace=True)
+	train = train.drop('Hazard', axis=1)
 	idx = test.index.values
 	for i in count_values:
 		count_feature_train = train[train==i].count(axis=1).values
