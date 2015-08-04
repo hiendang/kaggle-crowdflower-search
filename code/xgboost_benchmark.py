@@ -41,7 +41,32 @@ def get_data_2(train=None,test=None):
 	train = vec.fit_transform(train)
 	test = vec.transform(test)	
 	return train,labels.astype(float),test,idx
-
+def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.var]):
+	if train is None:
+		train  = pd.read_csv('../input/train.csv', index_col=0)
+	if test is None:
+		test  = pd.read_csv('../input/test.csv', index_col=0)
+	labels = train.Hazard.values
+	train.drop('Hazard', axis=1, inplace=True)
+	idx = test.index.values
+	if dropping:
+		train = train.drop('T2_V10', axis=1)
+		train = train.drop('T2_V7', axis=1)
+		train = train.drop('T1_V13', axis=1)
+		train = train.drop('T1_V10', axis=1)
+		test = test.drop('T2_V10', axis=1)
+		test = test.drop('T2_V7', axis=1)
+		test = test.drop('T1_V13', axis=1)
+		test = test.drop('T1_V10', axis=1)
+	for i in count_values:
+		count_feature_train = train[train==i].count(axis=1).values
+		train['count_%d'%i] = count_feature_train
+		count_feature_test = test[test==i].count(axis=1).values
+		test['count_%d'%i] = count_feature_test
+	
+	train,test = factorizing(train,labels,test,functions=functions)
+	return train,labels.astype(float),test,idx
+	##
 ### XGBOOST ###	
 params = {}
 params["objective"] = 'reg:linear'

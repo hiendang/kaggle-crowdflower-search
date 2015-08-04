@@ -18,6 +18,52 @@ def make_submission(filename,idx,ypred):
 	preds = preds.set_index('Id')
 	preds.to_csv(filename)
 	print ("Storing solution to file %s."%filename)
+def get_data_1(train=None,test=None,functions=[np.mean,np.var]):
+	#load train and test 
+	if train is None:
+		train  = pd.read_csv('../input/train.csv', index_col=0)
+	if test is None:
+		test  = pd.read_csv('../input/test.csv', index_col=0)
+	labels = train.Hazard.values
+	train.drop('Hazard', axis=1, inplace=True)
+	idx = test.index.values
+	train,test = factorizing(train,labels,test,functions=functions)
+	return train,labels.astype(float),test,idx
+
+def get_data_2(train=None,test=None):
+	#load train and test 
+	if train is None:
+		train  = pd.read_csv('../input/train.csv', index_col=0)
+	if test is None:
+		test  = pd.read_csv('../input/test.csv', index_col=0)
+	labels = train.Hazard.values
+	train.drop('Hazard', axis=1, inplace=True)
+	idx = test.index.values
+	
+	from sklearn.feature_extraction import DictVectorizer
+	train = train.T.to_dict().values()
+	test = test.T.to_dict().values()
+	vec = DictVectorizer()
+	train = vec.fit_transform(train)
+	test = vec.transform(test)	
+	return train,labels.astype(float),test,idx
+
+def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.var]):
+	if train is None:
+		train  = pd.read_csv('../input/train.csv', index_col=0)
+	if test is None:
+		test  = pd.read_csv('../input/test.csv', index_col=0)
+	labels = train.Hazard.values
+	train.drop('Hazard', axis=1, inplace=True)
+	idx = test.index.values
+	for i in count_values:
+		count_feature_train = train[train==i].count(axis=1).values
+		train['count_%d'%i] = count_feature_train
+		count_feature_test = test[test==i].count(axis=1).values
+		test['count_%d'%i] = count_feature_test
+	
+	train,test = factorizing(train,labels,test,functions=functions)
+	return train,labels.astype(float),test,idx
 
 def expected_scores(y,ypred,n_iter=100,random_state=1):
 	expected_public_score = 0
@@ -302,6 +348,7 @@ def factorizing(train, labels, test,functions=[np.mean,np.var,np.median],keep_ol
 					hazard_values = labels[train[col].values==l]				
 					new_col_train[new_col_train==l] = func(hazard_values)
 					new_col_test[new_col_test==l] = func(hazard_values)
+					print 'col %s with label %s are replaced with %f'%(col,l,func(hazard_values))
 				train_extended = new_col_train if train_extended is None else np.column_stack((train_extended,new_col_train))
 				test_extended = new_col_test if test_extended is None else np.column_stack((test_extended,new_col_test))
 			if keep_old_labels:
