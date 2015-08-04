@@ -41,7 +41,7 @@ def get_data_2(train=None,test=None):
 	train = vec.fit_transform(train)
 	test = vec.transform(test)	
 	return train,labels.astype(float),test,idx
-def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.var]):
+def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.var],dropping=True):
 	if train is None:
 		train  = pd.read_csv('../input/train.csv', index_col=0)
 	if test is None:

@@ -48,7 +48,7 @@ def get_data_2(train=None,test=None):
 	test = vec.transform(test)	
 	return train,labels.astype(float),test,idx
 
-def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.var]):
+def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.var],dropping=False):
 	if train is None:
 		train  = pd.read_csv('../input/train.csv', index_col=0)
 	if test is None:
@@ -65,6 +65,42 @@ def get_data_3(train=None,test=None,count_values=[1,2,3],functions=[np.mean,np.v
 	train,test = factorizing(train,labels,test,functions=functions)
 	return train,labels.astype(float),test,idx
 
+def create_class_features(train,y,test):
+	y[y > 4] = 0
+	y[y > 1] = 2
+	y[y==0] =3
+	y = y-1
+	params = {}
+	params["objective"] = 'multi:softmax'
+	params["eta"] = 0.005
+	params["min_child_weight"] = 5
+	params["subsample"] = 0.7
+	params["colsample_bytree"]=0.85
+	params["scale_pos_weight"] = 1.0
+	params["silent"] = 1
+	params["max_depth"] = 9
+	params['num_class'] = 3
+	xgb_class_train,xgb_class_test = xgb_features(train,y,test,params=params,n_folds=8,random_state=11)
+	for i in range(3):
+		seed = 4021 +i*291-21
+		xgb_class_train_i,xgb_class_test_i = xgb_features(train,y,test,params=params,n_folds=8,random_state=11)
+		xgb_class_train += xgb_class_train_i
+		xgb_class_test += xgb_class_test_i
+	xgb_class_train = xgb_class_train/4.
+	xgb_class_test = xgb_class_test/4.
+	
+	from sklearn.ensemble import RandomForestClassifier as RFC
+	rf = RFC(n_estimators=400,n_jobs=-1,random_state=19,)
+	rf_class_train,rf_class_test = sklearn_features(train,y,test,model=rf,n_folds=8,random_state=11)
+	for i in range(3):
+		seed = 41 +i*21-11
+		rf_class_train_i,rf_class_test_i = xgb_features(train,y,test,params=params,n_folds=8,random_state=11)
+		rf_class_train += rf_class_train_i
+		rf_class_test += rf_class_test_i
+	rf_class_train = rf_class_train/4.
+	rf_class_test = rf_class_test/4.
+	return np.column_stack((xgb_class_train,rf_class_train)),np.column_stack((xgb_class_test,rf_class_test))
+	
 def expected_scores(y,ypred,n_iter=100,random_state=1):
 	expected_public_score = 0
 	expected_private_score= 0
