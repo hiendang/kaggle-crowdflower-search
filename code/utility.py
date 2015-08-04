@@ -80,7 +80,9 @@ def create_class_features(train,y,test):
 	params["silent"] = 1
 	params["max_depth"] = 9
 	params['num_class'] = 3
-	xgb_class_train,xgb_class_test = xgb_features(train,y,test,params=params,n_folds=8,random_state=11)
+	params['eval_metric'] = 'mlogloss'
+	plst = params.items()
+	xgb_class_train,xgb_class_test = xgb_features(train,y,test,params=params,n_folds=8,random_state=11,early_stop=100)
 	for i in range(3):
 		seed = 4021 +i*291-21
 		xgb_class_train_i,xgb_class_test_i = xgb_features(train,y,test,params=params,n_folds=8,random_state=11)
